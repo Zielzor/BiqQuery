@@ -3,7 +3,7 @@ a.date_key,
 c.productNo,
 a. quantitySales,
 c.efeuNo,
-round(sum(a.nnt)) nnt,
+round(sum(a.nnt)) as nnt,
 a.cm1
 
 
