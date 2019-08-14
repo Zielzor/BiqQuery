@@ -22,7 +22,7 @@ customerNo_key
   ,sum(processLogisticsCosts) as processLogisticsCost
   ,sum(processCostsTotal) as processCostTot
 
-FROM `conrad-cbdp-prod-core.de_conrad_dwh1000_dwh_FactSales.FactSales` a,
+FROM `conrad-cbdp-prod-core.de_conrad_dwh1000_dwh_FactSales.FactSales` as a,
     `conrad-cbdp-prod-core.de_conrad_dwh1000_dwh_DimProductSalesOrg.DimProductSalesOrg`as b,
     `conrad-cbdp-prod-core.de_conrad_dwh1000_dwh_DimProduct.DimProduct` as c,
     `conrad-cbdp-prod-core.de_conrad_dwh1000_dwh_DimVersion.ViewDimVersion` as d,
