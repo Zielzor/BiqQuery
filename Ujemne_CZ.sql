@@ -39,6 +39,7 @@ AND a.salesOrg_key = '5850'
 AND a.statusWebshop is null #- dla pepeów przyjmuje wartość null 
 AND b.purPriceAverage != 0
 AND a.salesPrice != 0
+AND b.brandManufactorer != 'No Name (foreign brand)'
 AND(a.salesPrice - (((ROUND((b.purPriceAverage / k.rate))) / a.priceUnit) * 1.21)) / a.salesPrice < 0.10
 
 ORDER BY productNo
