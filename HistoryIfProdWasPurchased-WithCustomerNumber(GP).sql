@@ -1,5 +1,5 @@
 SELECT
-(distinct)customerNo_key
+customerNo_key
   ,invoiceNo_key
   ,orderNo_key
   ,productNo

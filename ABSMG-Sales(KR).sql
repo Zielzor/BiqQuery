@@ -3,12 +3,12 @@ a.date_key,
 c.productNo,
 a. quantitySales,
 c.efeuNo,
-round(sum(a.nnt)) as nnt,
+round(sum(a.nnt)) nnt,
 a.cm1
 
 
-FROM `conrad-cbdp-prod-core.de_conrad_dwh1000_dwh_FactSales.FactSales` as a,
-    `conrad-cbdp-prod-core.de_conrad_dwh1000_dwh_DimProductSalesOrg.DimProductSalesOrg` as b,
+FROM `conrad-cbdp-prod-core.de_conrad_dwh1000_dwh_FactSales.FactSales` a,
+    `conrad-cbdp-prod-core.de_conrad_dwh1000_dwh_DimProductSalesOrg.DimProductSalesOrg`as b,
     `conrad-cbdp-prod-core.de_conrad_dwh1000_dwh_DimProduct.DimProduct` as c,
     `conrad-cbdp-prod-core.de_conrad_dwh1000_dwh_DimVersion.ViewDimVersion` as d,
     `conrad-cbdp-prod-core.de_conrad_dwh1000_dwh_DimProfitcenter.DimProfitcenter` as e -- profitcenter global

@@ -1,0 +1,11 @@
+SELECT
+a.customerNo,
+CONCAT(a.firstName, " ", a.name1)
+  AS full_name,
+a.creator,
+a.customerClass,
+a.salesOffice,
+a.originCustomer
+
+FROM `conrad-cbdp-prod-core.de_conrad_dwh1000_dwh_DimCustomer.DimCustomer` as a,
+`conrad-cbdp-prod-core.de_conrad_dwh1000_dwh_DimCustomerTypeRfm.DimCustomerTypeRfm` as b
