@@ -21,14 +21,17 @@ b.statusDistriChainSpecific,
 k.rate AS KURS_wymiany
 
 FROM 
-`conrad-cbdp-prod-core.de_conrad_dwh1000_dwh_DimProductSalesOrg.DimProductSalesOrg` a, 
-`conrad-cbdp-prod-core.de_conrad_dwh1000_dwh_DimProduct.DimProduct` b, 
-`conrad-cbdp-prod-core.de_conrad_dwh1000_dwh_DimCalendar.DimCalendar` h, 
-`conrad-cbdp-prod-core.de_conrad_dwh1000_dwh_DimCurr.DimCurr` i, 
-`conrad-cbdp-prod-core.de_conrad_dwh1000_dwh_FactExchangeRate.FactExchangeRate` k, 
-`conrad-cbdp-prod-core.de_conrad_dwh1000_dwh_DimVersion.DimVersion` l 
+`conrad-cbdp-prod-core.de_conrad_dwh1000_dwh_DimProductSalesOrg.DimProductSalesOrg` as  a, 
+`conrad-cbdp-prod-core.de_conrad_dwh1000_dwh_DimProduct.DimProduct`as  b, 
+`conrad-cbdp-prod-core.de_conrad_dwh1000_dwh_DimCalendar.DimCalendar` as h, 
+`conrad-cbdp-prod-core.de_conrad_dwh1000_dwh_DimCurr.DimCurr` as i, 
+`conrad-cbdp-prod-core.de_conrad_dwh1000_dwh_FactExchangeRate.FactExchangeRate`as  k, 
+`conrad-cbdp-prod-core.de_conrad_dwh1000_dwh_DimVersion.DimVersion` as l, 
+`ceeregion-prod.GenItemCatGroup_NLAG.GenItemCatGroup_GLOBAL` as m 
 
 WHERE a.productNo_key = b.productNo_key 
+AND b.productNo = m.productNo
+AND m.NLAG_Status != "NLAG"
 AND h.date = '2019-10-23' #data 
 AND k.date_key = h.date_key 
 AND i.curr_key='CZK' 
@@ -39,7 +42,6 @@ AND a.salesOrg_key = '5850'
 AND a.statusWebshop is null #- dla pepeów przyjmuje wartość null 
 AND b.purPriceAverage != 0
 AND a.salesPrice != 0
-AND b.brandManufactorer != 'No Name (foreign brand)'
 AND(a.salesPrice - (((ROUND((b.purPriceAverage / k.rate))) / a.priceUnit) * 1.21)) / a.salesPrice < 0.10
 
 ORDER BY productNo

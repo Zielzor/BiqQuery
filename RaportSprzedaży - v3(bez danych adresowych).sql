@@ -1,12 +1,13 @@
 SELECT DISTINCT
-a.date_key as Data, 
+a.date_key as AA.Data, 
 c.profitCenter as Profit_Center,
-c.salesDistrict as Sales_District, 
+c.salesDistrict as Sales_District,
+c.customerInformation as Customer_information
 a.OrderNo as Order_No,
 g.insert_key as Insert_DE,
 j.Grupa_Insert_1  as Group_Insert_1,
 j.Grupa_Insert_2 as Group_Insert_2 ,
-j.Grupa_Insert_3 as Year,
+j.Grupa_Insert_3 as Grupa_Insert_3,
 f.quarter as Quarter_of_year,
 f.monthNum as Month,
 f.dayOfMonth as Day,
@@ -33,7 +34,11 @@ a.userName as User_Name,
 c.name1 as Customer_Name_1,
 c.firstName as Customer_Name_2,
 c.name3 as Customer_Name_3,
-c.name4 as Customer_Name_4
+c.name4 as Customer_Name_4,
+a.vv005 as Staggered_discount,
+a.vv003 as Customer_full_Discount,
+a.vv017 as Increments,
+a.reduciton as Reduction
 
 FROM
 `conrad-cbdp-prod-core.de_conrad_dwh1000_dwh_FactSales.FactSales` as a,
