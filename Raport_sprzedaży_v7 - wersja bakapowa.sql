@@ -28,36 +28,37 @@ h.privateLabelManufactorer as _17_Conrad_External,
 a.quantitySales as _18_ABSMG_Sales_Quantity,
 a.invoiceNo as _19_Invoice_no,
 h.productNo_key as _20_Article_No,
-h.brandManufactorer as _21_Brand,
-h.matClass_key as _22_MATKL, 
-d.billingKind_key as _23_Document_type,
-d.billingKindDescEng as _24_Document_Name,
-e.paymentMethodDescEng as _25_PaymentMethod,
-k.productDesc as _26_Article_Name,
-a.vv002 as _27_Catalog_Price_Net_EUR0,
-(a.discount * -1) as _28_Price_Reduction_EURO,
-(a.vv005 * -1) as _29_Staggered_discount,
-(a.customerDiscount * -1) as _30_Customer_Discount_EURO,
-(a.reduction * -1) as _31_Reduction,
-(a.vv003 * -1) as _32_Customer_full_Discount,
-(a.vv017 * -1) as _33_Increments,
-a.nnt as _34_NNT_EURO,
-a.movingAverageCOGS as _35_COGS_EURO, 
-a.nnt - a.movingAverageCOGS as _36_CM1_EURO,
-a.vv201 as _37_Catalog_revenues_EURO,
-(a.nnt / m.rate) as _38_NNT_PLN,
-(a.nnt - a.movingAverageCOGS) / m.rate as _39_CM1_PLN,
-a.calcCashDiscount as _40_Calc_Discount_EURO,
-a.userName as _41_User_Name,
-c.name1 as _42_Customer_Name_1,
-c.firstName as _43_Customer_Name_2,
-c.name3 as _44_Customer_Name_3,
-c.name4 as _45_Customer_Name_4,
-b.maingrpDescEng as _46_Head_Group, -- dopóki nie rozwiążę  problemu z hed grupami nie będziemy wykorzystywać tego zgrupowania
-b.categoryDescEng as _47_Categorie,
-b.category_key as _48_category_key,
-(a.conditionstotal * -1) as _49_Conditions,
-(a.nnt - a.cm1) as _50_Costs
+n.posNo as _21_Pos_no,
+h.brandManufactorer as _22_Brand,
+h.matClass_key as _23_MATKL, 
+d.billingKind_key as _24_Document_type,
+d.billingKindDescEng as _25_Document_Name,
+e.paymentMethodDescEng as _26_PaymentMethod,
+k.productDesc as _27_Article_Name,
+a.vv002 as _28_Catalog_Price_Net_EUR0,
+(a.discount * -1) as _29_Price_Reduction_EURO,
+(a.vv005 * -1) as _30_Staggered_discount,
+(a.customerDiscount * -1) as _31_Customer_Discount_EURO,
+(a.reduction * -1) as _32_Reduction,
+(a.vv003 * -1) as _33_Customer_full_Discount,
+(a.vv017 * -1) as _34_Increments,
+a.nnt as _35_NNT_EURO,
+a.movingAverageCOGS as _36_COGS_EURO, 
+a.nnt - a.movingAverageCOGS as _37_CM1_EURO,
+a.vv201 as _38_Catalog_revenues_EURO,
+(a.nnt / m.rate) as _39_NNT_PLN,
+(a.nnt - a.movingAverageCOGS) / m.rate as _40_CM1_PLN,
+a.calcCashDiscount as _41_Calc_Discount_EURO,
+a.userName as _42_User_Name,
+c.name1 as _43_Customer_Name_1,
+c.firstName as _44_Customer_Name_2,
+c.name3 as _45_Customer_Name_3,
+c.name4 as _46_Customer_Name_4,
+b.maingrpDescEng as _47_Head_Group, -- dopóki nie rozwiążę  problemu z hed grupami nie będziemy wykorzystywać tego zgrupowania
+b.categoryDescEng as _48_Categorie,
+b.category_key as _49_category_key,
+(a.conditionstotal * -1) as _50_Conditions,
+(a.nnt - a.cm1) as _51_Costs
 
 
 FROM
@@ -72,18 +73,21 @@ FROM
     `conrad-cbdp-prod-core.de_conrad_dwh1000_dwh_DimProfitcenter.DimProfitcenter` as i,
     `ceeregion-prod.InsertKody.TabelaInsertKody` as j,
     `conrad-cbdp-prod-core.de_conrad_dwh1000_dwh_DimProductSalesOrg.DimProductSalesOrg` as k,
-    `conrad-cbdp-prod-core.de_conrad_dwh1000_dwh_FactExchangeRate.FactExchangeRate` as m
+    `conrad-cbdp-prod-core.de_conrad_dwh1000_dwh_FactExchangeRate.FactExchangeRate` as m,
+    `conrad-cbdp-prod-core.de_conrad_dwh1000_dwh_FactOrderPos.FactOrderPos`as n
 
 
-WHERE a.partitionDate BETWEEN  "2019-12-01"  and CURRENT_DATE() #wycinek poddawany analizie
+WHERE a.partitionDate BETWEEN  "2020-01-01"  and CURRENT_DATE() #wycinek poddawany analizie
+and n.partitionDate BETWEEN  "2020-01-01"  and CURRENT_DATE()
 
+------
 and a.productNo_key = b.productNo_key
 and a.productNo_key = h.productNo_key
 and a.customerNo_key = c.customerNo_key
 and a.billingKind_key = d.billingKind_key
 and a.termsOfPayment = e.termsOfPayment
 and a.date_key = f.date_key
-and a.hGlobalAdvertisingMaterial_key = g.globalAdvertisingMaterial_key
+and a.pGlobalAdvertisingMaterial_key = g.globalAdvertisingMaterial_key
 and a.globalPc_key = i.globalPc_key
 and i.companyCode_key = '0581'
 and a.nnt != 0 
@@ -95,6 +99,9 @@ and m.curr_key = "PLN"
 and a.date_key = m.date_key  #DATE KURSU NALEŻY ZAWSZE BRAC Z DNIA POPRZEDNIEGO
 and m.version_key = "ISJA20060201"
 and b.flagActive  != 0
+------
+#and a.OrderNo = "1077808577"
+and a.OrderNo = n.orderNo 
 
 
 GROUP BY a.date_key,
@@ -154,7 +161,8 @@ m.rate,
 a.conditionstotal,
 a.cm1,
 a.orderType_key,
-h.privateLabelManufactorer
+h.privateLabelManufactorer,
+n.posNo
 
 
 

@@ -1,17 +1,17 @@
 SELECT DISTINCT
 a.date_key as _1_Data, 
 c.profitCenter as _2_Profit_Center,
-
 --Pola utworzeone poprzez wyrażenia warunkowe
+
 CASE
-WHEN salesDistrict = "5800"  or salesDistrict = "5801" or salesDistrict = "5802" or salesDistrict = "5806" or salesDistrict = "5823"  THEN "KAM TEAM"  
+WHEN salesDistrict = "5800"  or salesDistrict = "5801" or salesDistrict = "5802" or salesDistrict = "5806" or salesDistrict = "5823" THEN "KAM TEAM"  
 WHEN salesDistrict != "5800" or salesDistrict != "5801" or salesDistrict = "5802" or salesDistrict = "5806" or salesDistrict = "5823" or salesDistrict is not null  THEN "SALES TEAM CUSTOMER" 
 WHEN j.Grupa_Insert_1 ="95" THEN "MARKETPLACE CUSTOMERS"
 WHEN j.Grupa_Insert_1 = "00" or j.Grupa_Insert_1 = "62" THEN "SHOP CUSTOMERS"
 WHEN a.OrderNo = "9999999998" THEN "ADJUSTMENTS"
 END as _3_Customer_Groups,
----koniec wartości warunkowej
 
+---koniec wartości warunkowej
 c.salesDistrict as _4_Sales_District,
 c.customerInformation as _5_Customer_information,
 a.OrderNo as _6_Order_No,
@@ -23,39 +23,37 @@ f.quarter as _11_Quarter_of_year,
 f.monthNum as _12_Month,
 f.dayOfMonth as _13_Day,
 a.productNo_key as _14_Article_ID,
-a.quantitySales as _15_ABSMG_Sales_Quantity,
-a.invoiceNo as _16_Invoice_no,
-h.productNo_key as _17_Article_No,
-h.brandManufactorer as _18_Brand,
-h.matClass_key as _19_MATKL, 
-d.billingKind_key as _20_Document_type,
-d.billingKindDescEng as _21_Document_Name,
-e.paymentMethodDescEng as _22_PaymentMethod,
-k.productDesc as _23_Article_Name,
-a.vv001 as _24_Catalog_Price_Gross_EURO,
-a.vv002 as _25_Catalog_Price_Net_EUR0,
-(a.discount * -1) as _26_Price_Reduction_EURO,
-(a.vv005 * -1) as _27_Staggered_discount,
-(a.customerDiscount * -1) as _28_Customer_Discount_EURO,
-(a.reduction * -1) as _29_Reduction,
-(a.vv003 * -1) as _30_Customer_full_Discount,
-(a.vv017 * -1) as _31_Increments,
-a.nnt as _32_NNT_EURO,
-a.movingAverageCOGS as _33_COGS_EURO, 
-a.nnt - a.movingAverageCOGS as _34_CM1_EURO,
-a.vv201 as _35_Catalog_revenues_EURO,
-(a.nnt / m.rate) as _36_NNT_PLN,
-(a.nnt - a.movingAverageCOGS) / m.rate as _37_CM1_PLN,
-a.calcCashDiscount as _38_Calc_Discount_EURO,
-a.userName as _39_User_Name,
-c.name1 as _40_Customer_Name_1,
-c.firstName as _41_Customer_Name_2,
-c.name3 as _42_Customer_Name_3,
-c.name4 as _43_Customer_Name_4,
-b.maingrpDescEng as _44_Head_Group, -- dopóki nie rozwiążę  problemu z hed grupami nie będziemy wykorzystywać tego zgrupowania
-b.categoryDescEng as _45_Categorie,
-b.category_key as _46_category_key,
-(a.conditionstotal * -1) as _47_Conditions
+a.invoiceNo as _15_Invoice_no,
+h.productNo_key as _16_Article_No,
+h.brandManufactorer as _17_Brand,
+h.matClass_key as _18_MATKL, 
+d.billingKind_key as _19_Document_type,
+d.billingKindDescEng as _20_Document_Name,
+e.paymentMethodDescEng as _21_PaymentMethod,
+k.productDesc as _22_Article_Name,
+a.vv001 as _23_Catalog_Price_Gross_EURO,
+a.vv002 as _24_Catalog_Price_Net_EUR0,
+a.vv201 as _25_Catalog_revenues_EURO,
+a.nnt as _26_NNT_EURO,
+a.movingAverageCOGS as _27_COGS_EURO, 
+a.nnt - a.movingAverageCOGS as _28_CM1_EURO,
+a.discount as _29_Condition_EURO,
+a.calcCashDiscount as _30_Calc_Discount_EURO,
+a.customerDiscount as  _31_Customer_Discount_EURO,
+a.priceReduction as _32_Price_Reduction_EURO, 
+a.userName as _33_User_Name,
+c.name1 as _34_Customer_Name_1,
+c.firstName as _35_Customer_Name_2,
+c.name3 as _36_Customer_Name_3,
+c.name4 as _37_Customer_Name_4,
+(a.vv005 * -1) as _38_Staggered_discount,
+(a.vv003 * -1) as _39_Customer_full_Discount,
+(a.vv017 * -1) as _40_Increments,
+(a.reduction * -1) as _41_Reduction,
+b.maingrpDescEng as _42_Head_Group,
+b.categoryDescEng as _43_Categorie,
+b.category_key as _44_category_key
+
 
 
 FROM
@@ -69,12 +67,9 @@ FROM
 `conrad-cbdp-prod-core.de_conrad_dwh1000_dwh_DimProduct.DimProduct` as h,
 `conrad-cbdp-prod-core.de_conrad_dwh1000_dwh_DimProfitcenter.DimProfitcenter` as i,
 `ceeregion-prod.InsertKody.TabelaInsertKody` as j,
-`conrad-cbdp-prod-core.de_conrad_dwh1000_dwh_DimProductSalesOrg.DimProductSalesOrg` as k,
-`conrad-cbdp-prod-core.de_conrad_dwh1000_dwh_FactExchangeRate.FactExchangeRate` as m
+`conrad-cbdp-prod-core.de_conrad_dwh1000_dwh_DimProductSalesOrg.DimProductSalesOrg` as k
 
-
-WHERE a.partitionDate BETWEEN  "2019-12-01"  and CURRENT_DATE() #wycinek poddawany analizie
-and a.date_key BETWEEN 20191201 AND 20191217 #zakres analizy 
+WHERE a.date_key BETWEEN 20191201 AND 20191210
 and a.productNo_key = b.productNo_key
 and a.productNo_key = h.productNo_key
 and a.customerNo_key = c.customerNo_key
@@ -88,11 +83,9 @@ and a.nnt != 0
 and g.insert_key = j.Grupa_Insert_1
 and k.productNo_key = h.productNo_key
 and k.salesOrg_key = "5810"
--- relacje do kursu walut
-and m.curr_key = "PLN"
-and m.date_key = 20191216 #DATE KURSU NALEŻY ZAWSZE BRAC Z DNIA POPRZEDNIEGO
-and m.version_key = "ISJA20060201"
-and b.matClassDescEng != "***INACTIVE***"
+--- testy
+#and a.productNo_key = "000000000000101350"
+
 
 GROUP BY a.date_key,
 c.profitCenter,
@@ -145,17 +138,15 @@ a.vv017,
 a.reduction,
 b.maingrpDescEng,
 b.categoryDescEng,
-b.category_key,
-a.quantitySales,
-m.rate,
-a.conditionstotal
+b.category_key
 
 
 
 ORDER BY a.date_key,
 f.dayOfMonth,
 h.brandManufactorer, 
-h.matClass_key 
+h.matClass_key,
+b.category_key
 DESC
 
 
