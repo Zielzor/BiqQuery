@@ -1,0 +1,63 @@
+SELECT *
+
+FROM
+  `ceeregion-prod.Tab_Sales_CEPL_2019.Sales_Total` as a
+
+UNION ALL
+
+SELECT 
+b._1_Data,
+b._2_Profit_Center,
+NULL as _3_,
+NULL as _4_,
+NULL as Name_Sales_Districts,
+NULL as _5_,
+b._6_Order_No,
+NULL as _7_,
+b._8_Insert_DE,
+b._9_Group_Insert_1,
+b._10_Group_Insert_2,
+b._11_Grupa_Insert_3,
+b._12_PO_Type,
+b._13_Quarter_of_year, 
+b._14_Month,
+b._15_Day,
+NULL as _16_,
+NULL as _17_,
+NULL as _18_,
+b._19_Invoice_no,
+b._20_Article_No,
+NULL as _21_,
+NULL as _22_,
+NULL as _23_,
+b._24_Document_type,
+NULL as _25_,
+NULL as _26_,
+NULL as _27_,
+NULL as _28_,
+NULL as _29_,
+NULL as _30_,
+NULL as _31_,
+NULL as _32_,
+NULL as _33_,
+NULL as _34_,
+b._35_NNT_EURO,
+NULL as _36_,
+b._37_CM1_EURO,
+b.CM1_EURO_POLE, 
+NULL as _38_,
+b._39_NNT_PLN,
+b._40_CM1_PLN,
+NULL as _41_,
+b._42_User_Name,
+NULL as _43_Costs,
+NULL as_44_Costs,
+NULL as_45_Costs,
+NULL as_46_Costs,
+NULL as_47_Costs,
+NULL as_48_Costs,
+NULL as_49_Costs,
+NULL as_50_Costs,
+b._51_Costs
+FROM
+  `ceeregion-prod.Adjustmets.Adjustments_PL` as b

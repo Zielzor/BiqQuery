@@ -4,14 +4,15 @@ c.profitCenter as _2_Profit_Center,
 
 --Pola utworzeone poprzez wyrażenia warunkowe
 CASE
-WHEN salesDistrict = "5800"  or salesDistrict = "5801" or salesDistrict = "5802" or salesDistrict = "5806" or salesDistrict = "5823"  THEN "KAM TEAM"  
-WHEN salesDistrict != "5800" or salesDistrict != "5801" or salesDistrict = "5802" or salesDistrict = "5806" or salesDistrict = "5823" or salesDistrict is not null  THEN "SALES TEAM CUSTOMER" 
+WHEN c.salesDistrict = "5800"  or c.salesDistrict = "5801" or c.salesDistrict = "5802" or c.salesDistrict = "5806" or c.salesDistrict = "5823"  THEN "KAM TEAM"  
+WHEN c.salesDistrict != "5800" or c.salesDistrict != "5801" or c.salesDistrict != "5802" or c.salesDistrict != "5806" or c.salesDistrict != "5823" or c.salesDistrict is not null  THEN "SALES TEAM CUSTOMER" 
 WHEN j.Grupa_Insert_1 ="95" THEN "MARKETPLACE CUSTOMERS"
 WHEN j.Grupa_Insert_1 = "00" or j.Grupa_Insert_1 = "62" THEN "SHOP CUSTOMERS"
 END as _3_Customer_Groups,
 ---koniec wartości warunkowej
 
 c.salesDistrict as _4_Sales_District,
+n.KamName as Name_SalesDistrict,
 c.customerInformation as _5_Customer_information,
 a.OrderNo as _6_Order_No,
 a.customerNo_key as _7_Customer_No,
@@ -42,6 +43,8 @@ a.vv002 as _25_Catalog_Price_Net_EUR0,
 a.nnt as _32_NNT_EURO,
 a.movingAverageCOGS as _33_COGS_EURO, 
 a.nnt - a.movingAverageCOGS as _34_CM1_EURO,
+a.cm1 as  CM1_EURO_Pole,
+(a.cm1 / m.rate) as CM1_NAT_CURRENCY_Pole,
 a.vv201 as _35_Catalog_revenues_EURO,
 (a.nnt / m.rate) as _36_NNT_NAT_CURRENCY,
 (a.nnt - a.movingAverageCOGS) / m.rate as _37_CM1_NAT_CURRENCY,
@@ -70,10 +73,12 @@ FROM
     `conrad-cbdp-prod-core.de_conrad_dwh1000_dwh_DimProfitcenter.DimProfitcenter` as i,
     `ceeregion-prod.InsertKody.TabelaInsertKody` as j,
     `conrad-cbdp-prod-core.de_conrad_dwh1000_dwh_DimProductSalesOrg.DimProductSalesOrg` as k,
-    `conrad-cbdp-prod-core.de_conrad_dwh1000_dwh_FactExchangeRate.FactExchangeRate` as m,
+    `conrad-cbdp-prod-core.de_conrad_dwh1000_dwh_FactExchangeRate.FactExchangeRate` as m
+    LEFT JOIN `ceeregion-prod.Tab_Sales_District_2020_EAST.Tab_Sales_District_2020_EAST`as n on  n.SalesDistrict = c.salesDistrict
 
 
 WHERE a.partitionDate BETWEEN  "2020-01-01"  and CURRENT_DATE() #wycinek poddawany analizie
+
 
 ------
 and a.productNo_key = b.productNo_key
@@ -84,18 +89,18 @@ and a.termsOfPayment = e.termsOfPayment
 and a.date_key = f.date_key
 and a.pGlobalAdvertisingMaterial_key = g.globalAdvertisingMaterial_key
 and a.globalPc_key = i.globalPc_key
-and i.salesOrg_key = "5850" #zmienic na sales_org key
+and i.salesOrg_key = "5800" #zmienic na sales_org key
 and a.nnt != 0 
 and g.insert_key = j.Grupa_Insert_1
 and k.productNo_key = h.productNo_key
-and k.salesOrg_key = "5850"
+and k.salesOrg_key = "5800"
 -- relacje do kursu walut
-and m.curr_key = "CZK"
+and m.curr_key = "SKK"
 and a.date_key = m.date_key  #DATE KURSU NALEŻY ZAWSZE BRAC Z DNIA POPRZEDNIEGO
 and m.version_key = "ISJA20060201"
 and b.flagActive  != 0
 ------
-#and a.OrderNo = "1077808577"
+ 
 
 
 GROUP BY a.date_key,
@@ -156,7 +161,8 @@ a.conditionstotal,
 a.cm1,
 a.orderType_key,
 h.privateLabelManufactorer,
-n.posNo
+a.salesOrderPos,
+n.KamName
 
 
 

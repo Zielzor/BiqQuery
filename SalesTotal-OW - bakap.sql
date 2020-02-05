@@ -4,58 +4,63 @@ c.profitCenter as _2_Profit_Center,
 
 --Pola utworzeone poprzez wyrażenia warunkowe
 CASE
-WHEN salesDistrict = "5800"  or salesDistrict = "5801" or salesDistrict = "5802" or salesDistrict = "5806" or salesDistrict = "5823"  THEN "KAM TEAM"  
-WHEN salesDistrict != "5800" or salesDistrict != "5801" or salesDistrict = "5802" or salesDistrict = "5806" or salesDistrict = "5823" or salesDistrict is not null  THEN "SALES TEAM CUSTOMER" 
+WHEN c.salesDistrict = "5800"  or c.salesDistrict = "5801" or c.salesDistrict = "5802" or c.salesDistrict = "5806" or c.salesDistrict = "5823"  THEN "KAM TEAM"  
+WHEN c.salesDistrict != "5800" or c.salesDistrict != "5801" or c.salesDistrict != "5802" or c.salesDistrict != "5806" or c.salesDistrict != "5823" or c.salesDistrict is not null  THEN "SALES TEAM CUSTOMER" 
+WHEN c.salesDistrict is null THEN "SALES_TEAM"
 WHEN j.Grupa_Insert_1 ="95" THEN "MARKETPLACE CUSTOMERS"
 WHEN j.Grupa_Insert_1 = "00" or j.Grupa_Insert_1 = "62" THEN "SHOP CUSTOMERS"
 END as _3_Customer_Groups,
 ---koniec wartości warunkowej
 
 c.salesDistrict as _4_Sales_District,
+n.KamName as Przypisanie_Sales_District,
 c.customerInformation as _5_Customer_information,
 a.OrderNo as _6_Order_No,
 a.customerNo_key as _7_Customer_No,
 g.insert_key as _8_Insert_DE,
-a.orderType_key as _9_PO_Type,
-f.quarter as _10_Quarter_of_year,
-f.monthNum as _11_Month,
-f.dayOfMonth as _12_Day,
-a.productNo_key as _13_Article_ID,
-h.privateLabelManufactorer as _14_Conrad_External,
-a.quantitySales as _15_ABSMG_Sales_Quantity,
-a.invoiceNo as _16_Invoice_no,
-h.productNo_key as _17_Article_No,
-a.salesOrderPos as _18_Pos_no,
-h.brandManufactorer as _19_Brand,
-h.matClass_key as _20_MATKL, 
-d.billingKind_key as _21_Document_type,
-d.billingKindDescEng as _22_Document_Name,
-e.paymentMethodDescEng as _23_PaymentMethod,
-k.productDesc as _24_Article_Name,
-a.vv002 as _25_Catalog_Price_Net_EUR0,
-(a.discount * -1) as _26_Price_Reduction_EURO,
-(a.vv005 * -1) as _27_Staggered_discount,
-(a.customerDiscount * -1) as _28_Customer_Discount_EURO,
-(a.reduction * -1) as _29_Reduction,
-(a.vv003 * -1) as _30_Customer_full_Discount,
-(a.vv017 * -1) as _31_Increments,
-a.nnt as _32_NNT_EURO,
-a.movingAverageCOGS as _33_COGS_EURO, 
-a.nnt - a.movingAverageCOGS as _34_CM1_EURO,
-a.vv201 as _35_Catalog_revenues_EURO,
-(a.nnt / m.rate) as _36_NNT_NAT_CURRENCY,
-(a.nnt - a.movingAverageCOGS) / m.rate as _37_CM1_NAT_CURRENCY,
-a.calcCashDiscount as _38_Calc_Discount_EURO,
-a.userName as _39_User_Name,
-c.name1 as _40_Customer_Name_1,
-c.firstName as _41_Customer_Name_2,
-c.name3 as _42_Customer_Name_3,
-c.name4 as _43_Customer_Name_4,
-b.maingrpDescEng as _44_Head_Group, -- dopóki nie rozwiążę  problemu z hed grupami nie będziemy wykorzystywać tego zgrupowania
-b.categoryDescEng as _45_Categorie,
-b.category_key as _46_category_key,
-(a.conditionstotal * -1) as _47_Conditions,
-(a.nnt - a.cm1) as _48_Costs
+j.Grupa_Insert_1  as _9_Group_Insert_1,
+j.Grupa_Insert_2 as _10_Group_Insert_2,
+j.Grupa_Insert_3 as _11_Grupa_Insert_3,
+a.orderType_key as _12_PO_Type,
+f.quarter as _13_Quarter_of_year,
+f.monthNum as _14_Month,
+f.dayOfMonth as _15_Day,
+a.productNo_key as _16_Article_ID,
+h.privateLabelManufactorer as _17_Conrad_External,
+a.quantitySales as _18_ABSMG_Sales_Quantity,
+a.invoiceNo as _19_Invoice_no,
+h.productNo_key as _20_Article_No,
+a.salesOrderPos as _21_Order_Pos,
+h.brandManufactorer as _22_Brand,
+h.matClass_key as _23_MATKL, 
+d.billingKind_key as _24_Document_type,
+d.billingKindDescEng as _25_Document_Name,
+e.paymentMethodDescEng as _26_PaymentMethod,
+k.productDesc as _27_Article_Name,
+a.vv002 as _28_Catalog_Price_Net_EUR0,
+(a.discount * -1) as _29_Price_Reduction_EURO,
+(a.vv005 * -1) as _30_Staggered_discount,
+(a.customerDiscount * -1) as _31_Customer_Discount_EURO,
+(a.reduction * -1) as _32_Reduction,
+(a.vv003 * -1) as _33_Customer_full_Discount,
+(a.vv017 * -1) as _34_Increments,
+a.nnt as _35_NNT_EURO,
+a.movingAverageCOGS as _36_COGS_EURO, 
+a.nnt - a.movingAverageCOGS as _37_CM1_EURO,
+a.vv201 as _38_Catalog_revenues_EURO,
+(a.nnt / m.rate) as _39_NNT_PLN,
+(a.nnt - a.movingAverageCOGS) / m.rate as _40_CM1_PLN,
+a.calcCashDiscount as _41_Calc_Discount_EURO,
+a.userName as _42_User_Name,
+c.name1 as _43_Customer_Name_1,
+c.firstName as _44_Customer_Name_2,
+c.name3 as _45_Customer_Name_3,
+c.name4 as _46_Customer_Name_4,
+b.maingrpDescEng as _47_Head_Group, -- dopóki nie rozwiążę  problemu z hed grupami nie będziemy wykorzystywać tego zgrupowania
+b.categoryDescEng as _48_Categorie,
+b.category_key as _49_category_key,
+(a.conditionstotal * -1) as _50_Conditions,
+(a.nnt - a.cm1) as _51_Costs
 
 
 FROM
@@ -70,10 +75,12 @@ FROM
     `conrad-cbdp-prod-core.de_conrad_dwh1000_dwh_DimProfitcenter.DimProfitcenter` as i,
     `ceeregion-prod.InsertKody.TabelaInsertKody` as j,
     `conrad-cbdp-prod-core.de_conrad_dwh1000_dwh_DimProductSalesOrg.DimProductSalesOrg` as k,
-    `conrad-cbdp-prod-core.de_conrad_dwh1000_dwh_FactExchangeRate.FactExchangeRate` as m,
+    `conrad-cbdp-prod-core.de_conrad_dwh1000_dwh_FactExchangeRate.FactExchangeRate` as m
+    LEFT JOIN `ceeregion-prod.Tab_Sales_District_2020_EAST.Tab_Sales_District_2020_EAST`as n on  n.SalesDistrict = c.salesDistrict
 
 
-WHERE a.partitionDate BETWEEN  "2020-01-01"  and CURRENT_DATE() #wycinek poddawany analizie
+
+WHERE a.partitionDate BETWEEN  "2019-12-29"  and CURRENT_DATE() #wycinek poddawany analizie
 
 ------
 and a.productNo_key = b.productNo_key
@@ -84,18 +91,19 @@ and a.termsOfPayment = e.termsOfPayment
 and a.date_key = f.date_key
 and a.pGlobalAdvertisingMaterial_key = g.globalAdvertisingMaterial_key
 and a.globalPc_key = i.globalPc_key
-and i.salesOrg_key = "5850" #zmienic na sales_org key
+and i.companyCode_key = '0581'
 and a.nnt != 0 
 and g.insert_key = j.Grupa_Insert_1
 and k.productNo_key = h.productNo_key
-and k.salesOrg_key = "5850"
+and k.salesOrg_key = "5810"
 -- relacje do kursu walut
-and m.curr_key = "CZK"
+and m.curr_key = "PLN"
 and a.date_key = m.date_key  #DATE KURSU NALEŻY ZAWSZE BRAC Z DNIA POPRZEDNIEGO
 and m.version_key = "ISJA20060201"
 and b.flagActive  != 0
 ------
-#and a.OrderNo = "1077808577"
+#and a.OrderNo = n.orderNo 
+#and a.invoiceNo =  "9581822118"
 
 
 GROUP BY a.date_key,
@@ -156,7 +164,9 @@ a.conditionstotal,
 a.cm1,
 a.orderType_key,
 h.privateLabelManufactorer,
-n.posNo
+a.salesOrderPos,
+n.KamName
+
 
 
 
