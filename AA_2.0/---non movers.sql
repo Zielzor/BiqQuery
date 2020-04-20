@@ -1,5 +1,5 @@
 --- zestawienie sprzedaży
-CREATE OR REPLACE TABLE `ceeregion-prod.AA_Tabela_Testowa.aa_sales_pl` AS
+CREATE OR REPLACE TABLE `ceeregion-prod.aa_nonmovers_pl.aa_sales_pl` AS
 SELECT DISTINCT
 a.date_key as _1_Data, 
 i.profitcenterCe_key as _2_Profit_Center,
@@ -85,7 +85,7 @@ FROM
 
 
 
-WHERE a.partitionDate BETWEEN  "2018-12-29"  and CURRENT_DATE() #wycinek poddawany analizie
+WHERE a.partitionDate BETWEEN  "2018-01-01"  and CURRENT_DATE() #wycinek poddawany analizie
 
 ------
 and a.productNo_key = b.productNo_key
@@ -108,7 +108,7 @@ and m.version_key = "ISJA20060201"
 and b.flagActive  != 0;
 
 --- stworzenie adjustemntsów
-CREATE OR REPLACE TABLE `ceeregion-prod.AA_Tabela_Testowa.aa_adjustments_pl` AS
+CREATE OR REPLACE TABLE `ceeregion-prod.aa_nonmovers_pl.aa_adjustments_pl` AS
 SELECT 
 a.date_key as _1_Data,
 e.profitcenterCe_key as _2_Profit_Center,
@@ -147,7 +147,7 @@ FROM `conrad-cbdp-prod-core.de_conrad_dwh1000_dwh_FactSales.FactSales` a,
     `conrad-cbdp-prod-core.de_conrad_dwh1000_dwh_DimCalendar.DimCalendar` as b,
     `conrad-cbdp-prod-core.de_conrad_dwh1000_dwh_FactExchangeRate.FactExchangeRate` as c
 
-WHERE partitionDate BETWEEN  "2019-01-01"  and CURRENT_DATE()
+WHERE partitionDate BETWEEN  "2018-01-01"  and CURRENT_DATE()
 and a.globalPc_key=e.globalPc_key
 and e.salesOrg_key='5810'
 and a.version_key  = "ISJA20060201"
@@ -169,11 +169,11 @@ and c.version_key = "ISJA20060201"
 and orderNo = "9999999998";
 
 --- union całości
-CREATE OR REPLACE TABLE `ceeregion-prod.AA_Tabela_Testowa.aa_sales2019_pl` AS
+CREATE OR REPLACE TABLE `ceeregion-prod.aa_nonmovers_pl.aa_sales2020_pl` AS
 SELECT *
 
 FROM
-  `ceeregion-prod.AA_Tabela_Testowa.aa_sales_pl` as a
+  `ceeregion-prod.aa_nonmovers_pl.aa_sales_pl` as a
 
 UNION ALL
 
@@ -231,4 +231,50 @@ NULL as_49_Costs,
 NULL as_50_Costs,
 b._51_Costs
 FROM
-  `ceeregion-prod.AA_Tabela_Testowa.aa_adjustments_pl` as b
+  `ceeregion-prod.aa_nonmovers_pl.aa_adjustments_pl` as b;
+------
+CREATE OR REPLACE TABLE `ceeregion-prod.aa_nonmovers_pl.NonMovers_pl` AS
+SELECT *
+
+from `ceeregion-prod.aa_nonmovers_pl.aa_sales2020_pl` as a
+
+ORDER BY _1_Data DESC;
+
+-----
+CREATE OR REPLACE TABLE `ceeregion-prod.aa_nonmovers_pl.NonMovers_pl` as 
+SELECT DISTINCT 
+_1_Data,
+_20_Article_No,
+_27_Article_Name
+_17_Conrad_External,
+_22_Brand,
+_23_MATKL,
+'X' sprzedaje_sie
+FROM `ceeregion-prod.aa_nonmovers_pl.NonMovers_pl`;
+------
+CREATE OR REPLACE TABLE `ceeregion-prod.aa_nonmovers_pl.NonMovers_pl` AS
+SELECT DISTINCT 
+b.Product_ID,
+b.Nazwa,
+b.Brand,
+b.MATKL,
+b.VkPL_brutto,
+b.VkPL_netto,
+b.Zakup_PLN_netto,
+b.statusArticleSite,
+b.statusCrossSite,
+b.statusCrossDistrChain,
+b.statusDistriChainSpecific,
+b.MTPOS_PL_5810,
+a.sprzedaje_sie  as Sprzedaz
+
+FROM `ceeregion-prod.PriceFile.PriceFile_PL` as b
+LEFT JOIN  `ceeregion-prod.aa_nonmovers_pl.NonMovers_pl` as a ON a._20_Article_No = b.productNo_key
+
+WHERE MTPOS_PL_5810 != "NLAG";
+
+
+---drop śmietnika
+DROP TABLE `ceeregion-prod.aa_nonmovers_pl.aa_adjustments_pl`;
+DROP TABLE `ceeregion-prod.aa_nonmovers_pl.aa_sales2020_pl`;
+DROP TABLE `ceeregion-prod.aa_nonmovers_pl.aa_sales_pl`;

@@ -1,10 +1,10 @@
-CREATE OR REPLACE TABLE  `ceeregion-prod.AA_Tabela_Testowa.slowenia1` AS 
+CREATE OR REPLACE TABLE  `ceeregion-prod.Dashboards_CEPL_2020.czechy1` AS 
 SELECT
 a.date_key,
 a.globalPc_key,
 a.version_key,
 a.pGlobalAdvertisingMaterial_key, 
-a.dateCreation ,
+a.dateCreation DESC,
 a.invoiceNo_key,
 a.orderNo_key,
 a.OrderNo,
@@ -43,7 +43,7 @@ FROM `conrad-cbdp-prod-core.de_conrad_dwh1000_dwh_FactSales.FactSales` a,
 
 WHERE PARTITIONDATE >= "2019-12-29" #Wystarczy zmienić miesiąc aby dostać nowy raport
 AND a.globalpc_key=b.globalpc_key
-AND b.salesOrg_key='5900'
+AND b.salesOrg_key='5850'
 AND a.version_key='ISJA20060201' #Filtr
 AND a.date_key>=20191229
 ---------DimProduct
@@ -57,7 +57,7 @@ c.privateLabelManufactorer,c.brandManufactorer,c.matClass_key,a.date_key,a.globa
 a.pGlobalAdvertisingMaterial_key,a.termsOfPayment,a.billingKind_key;
 
 ---------etap drugi dowiązanie DimProductHierarchy
-CREATE OR REPLACE TABLE  `ceeregion-prod.AA_Tabela_Testowa.slowenia2` AS 
+CREATE OR REPLACE TABLE  `ceeregion-prod.Dashboards_CEPL_2020.czechy2` AS 
 SELECT 
 a.*,
 b.maingrpDescEng as HeadGroup, -- dopóki nie rozwiążę  problemu z hed grupami nie będziemy wykorzystywać tego zgrupowania
@@ -65,23 +65,23 @@ b.categoryDescEng as Categorie,
 b.category_key as categoryKey,
 
 
-FROM `ceeregion-prod.AA_Tabela_Testowa.slowenia1`  a,
+FROM `ceeregion-prod.Dashboards_CEPL_2020.czechy1`  a,
       `conrad-cbdp-prod-core.de_conrad_dwh1000_dwh_DimProductHierarchy.DimProductHierarchy` b
 
 WHERE a.productNo_key = b.productNo_key 
 AND b.flagActive  != 0;
 
 ---------etap trzeci dowiązanie DimProductSalesOrg
-CREATE OR REPLACE TABLE  `ceeregion-prod.AA_Tabela_Testowa.slowenia3` AS 
+CREATE OR REPLACE TABLE  `ceeregion-prod.Dashboards_CEPL_2020.czechy3` AS 
 SELECT DISTINCT
 a.*,
 b.productDesc as bArticle_Name,
 
-FROM `ceeregion-prod.AA_Tabela_Testowa.slowenia2` a
-      LEFT JOIN `conrad-cbdp-prod-core.de_conrad_dwh1000_dwh_DimProductSalesOrg.DimProductSalesOrg` b on a.productNo_key = b.productNo_key and b.salesOrg_key = "5900";
+FROM `ceeregion-prod.Dashboards_CEPL_2020.czechy2` a
+      LEFT JOIN `conrad-cbdp-prod-core.de_conrad_dwh1000_dwh_DimProductSalesOrg.DimProductSalesOrg` b on a.productNo_key = b.productNo_key and b.salesOrg_key = "5850";
 
 ---------etap czwarty dowiązanie DimCustomer
-CREATE OR REPLACE TABLE `ceeregion-prod.AA_Tabela_Testowa.slowenia4` AS 
+CREATE OR REPLACE TABLE `ceeregion-prod.Dashboards_CEPL_2020.czechy4` AS 
 SELECT
 a.*,
 b.salesDistrict as SalesDistrict,
@@ -92,73 +92,73 @@ b.name4 as CustomerName4,
 b.customerInformation as Customer_information
 
 
-FROM  `ceeregion-prod.AA_Tabela_Testowa.slowenia3` a,
+FROM  `ceeregion-prod.Dashboards_CEPL_2020.czechy3` a,
       `conrad-cbdp-prod-core.de_conrad_dwh1000_dwh_DimCustomer.DimCustomer` as b
 
 WHERE  a.dateCreation DESC = b.dateCreation DESC;
 ---------etap piąty dowiązanie DimAdvertisingMaterial
-CREATE OR REPLACE TABLE `ceeregion-prod.AA_Tabela_Testowa.slowenia5` AS 
+CREATE OR REPLACE TABLE `ceeregion-prod.Dashboards_CEPL_2020.czechy5` AS 
 SELECT
 a.*,
 b.insert_key as InsertKey
-FROM `ceeregion-prod.AA_Tabela_Testowa.slowenia4` a,
+FROM `ceeregion-prod.Dashboards_CEPL_2020.czechy4` a,
       `conrad-cbdp-prod-core.de_conrad_dwh1000_dwh_DimAdvertisingMaterial.DimAdvertisingMaterial` as b
 
 WHERE a.pGlobalAdvertisingMaterial_key = b.globalAdvertisingMaterial_key;
 
 ---------etap szósty dowiązanie DimPaymentCondition
-CREATE OR REPLACE TABLE `ceeregion-prod.AA_Tabela_Testowa.slowenia6` AS 
+CREATE OR REPLACE TABLE `ceeregion-prod.Dashboards_CEPL_2020.czechy6` AS 
 SELECT 
 a.*,
 b.paymentMethodDescEng as PaymentMethod
 
 
-FROM `ceeregion-prod.AA_Tabela_Testowa.slowenia5` a,
+FROM `ceeregion-prod.Dashboards_CEPL_2020.czechy5` a,
       `conrad-cbdp-prod-core.de_conrad_dwh1000_dwh_DimPaymentCondition.DimPaymentCondition` as b
 
 WHERE  a.termsOfPayment = b.termsOfPayment;
 
 ---------etap siódmy dowiązanie DimBillingType 
-CREATE OR REPLACE TABLE `ceeregion-prod.AA_Tabela_Testowa.slowenia7` AS 
+CREATE OR REPLACE TABLE `ceeregion-prod.Dashboards_CEPL_2020.czechy7` AS 
 SELECT 
 a.*,
 b.billingKind_key as Document_type,
 b.billingKindDescEng as Document_Name,
 
-FROM  `ceeregion-prod.AA_Tabela_Testowa.slowenia6` a,
+FROM  `ceeregion-prod.Dashboards_CEPL_2020.czechy6` a,
       `conrad-cbdp-prod-core.de_conrad_dwh1000_dwh_DimBillingType.DimBillingType` as b
 
 WHERE  a.billingKind_key = b.billingKind_key;
 
 ---------etap ósmy dowiązanie GlobalnychInsertów
-CREATE OR REPLACE TABLE `ceeregion-prod.AA_Tabela_Testowa.slowenia8` AS 
+CREATE OR REPLACE TABLE `ceeregion-prod.Dashboards_CEPL_2020.czechy8` AS 
 SELECT 
 a.*,
 b.Grupa_Insert_1
 
-FROM `ceeregion-prod.AA_Tabela_Testowa.slowenia7` as a
+FROM `ceeregion-prod.Dashboards_CEPL_2020.czechy7` as a
 LEFT JOIN `ceeregion-prod.InsertKody.TabelaInsertKody` as b on  a.InsertKey = b.Grupa_Insert_1;
 
 ---------etap dziwwiąty dowiązanie GlobalnychSalesDistrów
-CREATE OR REPLACE TABLE `ceeregion-prod.AA_Tabela_Testowa.slowenia9` AS 
+CREATE OR REPLACE TABLE `ceeregion-prod.Dashboards_CEPL_2020.czechy9` AS 
 SELECT 
 a.*,
 b.KamName
-FROM `ceeregion-prod.AA_Tabela_Testowa.slowenia8` as a 
+FROM `ceeregion-prod.Dashboards_CEPL_2020.czechy8` as a 
 LEFT JOIN `ceeregion-prod.Tab_Sales_District_2020_EAST.Tab_Sales_District_2020_EAST` b on a.SalesDistrict = b.SalesDistrict;
 
 ---------etap dziesiąty dowiązanie Dat
-CREATE OR REPLACE TABLE `ceeregion-prod.AA_Tabela_Testowa.slowenia10` AS 
+CREATE OR REPLACE TABLE `ceeregion-prod.Dashboards_CEPL_2020.czechy10` AS 
 SELECT 
 a.*,
 b.date
 
-FROM `ceeregion-prod.AA_Tabela_Testowa.slowenia9` as a, 
+FROM `ceeregion-prod.Dashboards_CEPL_2020.czechy9` as a, 
       `conrad-cbdp-prod-core.de_conrad_dwh1000_dwh_DimCalendar.DimCalendar` as b
 WHERE a.date_key = b.date_key;
 
 ---------etap Finalny/agregacja/selekcja 
-CREATE OR REPLACE TABLE `ceeregion-prod.AA_Tabela_Testowa.Sales_SLO_2020_Simplify` AS 
+CREATE OR REPLACE TABLE `ceeregion-prod.Dashboards_CEPL_2020.Dashboard_CEPL_2020_CZ` AS 
 SELECT	
 a.date as Data,
 a.fiscalYear,	
@@ -211,18 +211,18 @@ a.CustomerName3,
 a.CustomerName4	
 
 
-FROM `ceeregion-prod.AA_Tabela_Testowa.slowenia10` as a
+FROM `ceeregion-prod.Dashboards_CEPL_2020.czechy10` as a
 
 ORDER BY DATA DESC;
 
 ---drop śmietnika
-DROP TABLE `ceeregion-prod.AA_Tabela_Testowa.slowenia1`;
-DROP TABLE `ceeregion-prod.AA_Tabela_Testowa.slowenia2`;
-DROP TABLE `ceeregion-prod.AA_Tabela_Testowa.slowenia3`;
-DROP TABLE `ceeregion-prod.AA_Tabela_Testowa.slowenia4`;
-DROP TABLE `ceeregion-prod.AA_Tabela_Testowa.slowenia5`;
-DROP TABLE `ceeregion-prod.AA_Tabela_Testowa.slowenia6`;
-DROP TABLE `ceeregion-prod.AA_Tabela_Testowa.slowenia7`;
-DROP TABLE `ceeregion-prod.AA_Tabela_Testowa.slowenia8`;
-DROP TABLE `ceeregion-prod.AA_Tabela_Testowa.slowenia9`;
-DROP TABLE `ceeregion-prod.AA_Tabela_Testowa.slowenia10`;
+DROP TABLE `ceeregion-prod.Dashboards_CEPL_2020.czechy1`;
+DROP TABLE `ceeregion-prod.Dashboards_CEPL_2020.czechy2`;
+DROP TABLE `ceeregion-prod.Dashboards_CEPL_2020.czechy3`;
+DROP TABLE `ceeregion-prod.Dashboards_CEPL_2020.czechy4`;
+DROP TABLE `ceeregion-prod.Dashboards_CEPL_2020.czechy5`;
+DROP TABLE `ceeregion-prod.Dashboards_CEPL_2020.czechy6`;
+DROP TABLE `ceeregion-prod.Dashboards_CEPL_2020.czechy7`;
+DROP TABLE `ceeregion-prod.Dashboards_CEPL_2020.czechy8`;
+DROP TABLE `ceeregion-prod.Dashboards_CEPL_2020.czechy9`;
+DROP TABLE `ceeregion-prod.Dashboards_CEPL_2020.czechy10`;

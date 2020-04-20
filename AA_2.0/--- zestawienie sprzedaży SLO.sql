@@ -18,7 +18,7 @@ c.salesDistrict as _4_Sales_District,
 n.KamName as Name_SalesDistrict,
 c.customerInformation as _5_Customer_information,
 a.OrderNo as _6_Order_No,
-a.customerNo_key as _7_Customer_No,
+a.dateCreation DESC as _7_Customer_No,
 g.insert_key as _8_Insert_DE,
 a.orderType_key as _9_PO_Type,
 f.quarter as _10_Quarter_of_year,
@@ -83,7 +83,7 @@ and a.date_key>=20200101
 ------
 and a.productNo_key = b.productNo_key
 and a.productNo_key = h.productNo_key
-and a.customerNo_key = c.customerNo_key
+and a.dateCreation DESC = c.dateCreation DESC
 and a.billingKind_key = d.billingKind_key
 and a.termsOfPayment = e.termsOfPayment
 and a.date_key = f.date_key
@@ -138,7 +138,7 @@ and a.globalPc_key=e.globalPc_key
 and e.salesOrg_key='5900'
 and a.version_key  = "ISJA20060201"
 and a.version_key  = d.VERSION_KEY 
-and a.customerNo_key  = f.customerNo_key 
+and a.dateCreation DESC  = f.dateCreation DESC 
 and e.costCenterNo != 4211
 and a.date_key  = g.date_key
 and a.hGlobalAdvertisingMaterial_key = h.globalAdvertisingMaterial_key

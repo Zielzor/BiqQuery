@@ -1,9 +1,8 @@
---- zestawienie sprzedaży
-CREATE OR REPLACE TABLE `ceeregion-prod.AA_Tabela_Testowa.aa_sales_pl` AS
+--- krok 1)zestawienie sprzedaży
+CREATE OR REPLACE TABLE `ceeregion-prod.StaticYears_CEPL.Sales_2019` AS
 SELECT DISTINCT
 a.date_key as _1_Data, 
 i.profitcenterCe_key as _2_Profit_Center,
-
 --Pola utworzeone poprzez wyrażenia warunkowe
 CASE
 WHEN c.salesDistrict = "5800"  or c.salesDistrict = "5801" or c.salesDistrict = "5802" or c.salesDistrict = "5806" or c.salesDistrict = "5823"  THEN "2.KAM TEAM"  
@@ -13,12 +12,11 @@ WHEN j.Grupa_Insert_1 = "00" or j.Grupa_Insert_1 = "62" THEN "1.ONLINE"
 WHEN  c.salesDistrict is null THEN "3.SALES TEAM"
 END as _3_Customer_Groups,
 ---koniec wartości warunkowej
-
 c.salesDistrict as _4_Sales_District,
 n.KamName as Name_Sales_District,
 c.customerInformation as _5_Customer_information,
 a.OrderNo as _6_Order_No,
-a.dateCreation DESC as _7_Customer_No,
+a.customerNo_key as _7_Customer_No,
 g.insert_key as _8_Insert_DE,
 j.Grupa_Insert_1  as _9_Group_Insert_1,
 j.Grupa_Insert_2 as _10_Group_Insert_2,
@@ -85,12 +83,12 @@ FROM
 
 
 
-WHERE a.partitionDate BETWEEN  "2018-12-29"  and CURRENT_DATE() #wycinek poddawany analizie
+WHERE a.partitionDate BETWEEN  "2018-12-29"  and "2019-12-31" #wycinek poddawany analizie
 
 ------
 and a.productNo_key = b.productNo_key
 and a.productNo_key = h.productNo_key
-and a.dateCreation DESC = c.dateCreation DESC
+and a.customerNo_key = c.customerNo_key
 and a.billingKind_key = d.billingKind_key
 and a.termsOfPayment = e.termsOfPayment
 and a.date_key = f.date_key
@@ -107,8 +105,9 @@ and a.date_key = m.date_key  #DATE KURSU NALEŻY ZAWSZE BRAC Z DNIA POPRZEDNIEGO
 and m.version_key = "ISJA20060201"
 and b.flagActive  != 0;
 
---- stworzenie adjustemntsów
-CREATE OR REPLACE TABLE `ceeregion-prod.AA_Tabela_Testowa.aa_adjustments_pl` AS
+
+----- krok 2)stworzenie adjustmentsów
+CREATE OR REPLACE TABLE `ceeregion-prod.StaticYears_CEPL.aa_adjustments_pl` AS
 SELECT 
 a.date_key as _1_Data,
 e.profitcenterCe_key as _2_Profit_Center,
@@ -136,7 +135,6 @@ a.cm1 as _37_CM1_EURO,
 a.userName as _42_User_Name,
 (a.nnt - a.cm1) as _51_Costs,
 
- 
 FROM `conrad-cbdp-prod-core.de_conrad_dwh1000_dwh_FactSales.FactSales` a,
     `conrad-cbdp-prod-core.de_conrad_dwh1000_dwh_DimVersion.ViewDimVersion` as d,
     `conrad-cbdp-prod-core.de_conrad_dwh1000_dwh_DimProfitcenter.DimProfitcenter` as e,
@@ -147,12 +145,12 @@ FROM `conrad-cbdp-prod-core.de_conrad_dwh1000_dwh_FactSales.FactSales` a,
     `conrad-cbdp-prod-core.de_conrad_dwh1000_dwh_DimCalendar.DimCalendar` as b,
     `conrad-cbdp-prod-core.de_conrad_dwh1000_dwh_FactExchangeRate.FactExchangeRate` as c
 
-WHERE partitionDate BETWEEN  "2019-01-01"  and CURRENT_DATE()
+WHERE partitionDate BETWEEN  "2018-12-29"  and "2019-12-31"
 and a.globalPc_key=e.globalPc_key
 and e.salesOrg_key='5810'
 and a.version_key  = "ISJA20060201"
 and a.version_key  = d.VERSION_KEY 
-and a.dateCreation DESC  = f.dateCreation DESC 
+and a.customerNo_key  = f.customerNo_key 
 and e.costCenterNo != 4211
 and a.date_key  = g.date_key
 and a.hGlobalAdvertisingMaterial_key = h.globalAdvertisingMaterial_key
@@ -168,12 +166,12 @@ and c.version_key = "ISJA20060201"
 ---reszta 
 and orderNo = "9999999998";
 
---- union całości
-CREATE OR REPLACE TABLE `ceeregion-prod.AA_Tabela_Testowa.aa_sales2019_pl` AS
+------- krok 3) (soviet) union 
+CREATE OR REPLACE TABLE `ceeregion-prod.StaticYears_CEPL.Dasboard_CEPL_2019` AS
 SELECT *
 
 FROM
-  `ceeregion-prod.AA_Tabela_Testowa.aa_sales_pl` as a
+  `ceeregion-prod.StaticYears_CEPL.Sales_2019` as a
 
 UNION ALL
 
@@ -231,4 +229,11 @@ NULL as_49_Costs,
 NULL as_50_Costs,
 b._51_Costs
 FROM
-  `ceeregion-prod.AA_Tabela_Testowa.aa_adjustments_pl` as b
+  `ceeregion-prod.StaticYears_CEPL.aa_adjustments_pl` as b;
+------- uporządkowanie
+CREATE OR REPLACE TABLE `ceeregion-prod.StaticYears_CEPL.Dasboard_CEPL_2019` AS
+SELECT *
+
+from `ceeregion-prod.StaticYears_CEPL.Dasboard_CEPL_2019` as a
+
+ORDER BY _1_Data DESC;

@@ -52,7 +52,7 @@ FROM `ceeregion-prod.aa_klienci_rozwojowi.customer_saspzoo` as a,
     `conrad-cbdp-prod-core.de_conrad_dwh1000_dwh_DimCustomer.DimCustomer` as b,
     `conrad-cbdp-prod-core.de_conrad_dwh1000_dwh_DimCalendar.DimCalendar` as c
 
-WHERE  a.Customer_No = b.customerNo_key 
+WHERE  a.Customer_No = b.dateCreation DESC 
 AND a.Data = c.date_key
 AND b.dateCreation >='2020-01-01'
 ORDER BY c.date ASC;
