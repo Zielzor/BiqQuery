@@ -239,10 +239,13 @@ FROM
 
 
 --- dowiązanie flag managed
-CREATE OR REPLACE TABLE `eeregion-prod.AA_Tabela_Testowa.aa_sales2020_pl` as 
+CREATE OR REPLACE TABLE `ceeregion-prod.AA_Tabela_Testowa.aa_sales2020_pl` as 
 SELECT
-a.*
-b.flagManaged as ManagedAs
+a.*,
+#b.flagManaged as Managed_As
+CASE 
+WHEN b.flagManaged > 0 THEN "PMC" else "DMC"
+END AS Managed_As
 FROM
     `ceeregion-prod.AA_Tabela_Testowa.aa_sales_pl` as a
     LEFT JOIN `conrad-cbdp-prod-core.de_conrad_dwh1000_dwh_DimCustomerDistrict.DimCustomerDistrict` as b on a._4_Sales_District = b.district_key;
