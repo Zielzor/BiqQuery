@@ -17,7 +17,7 @@ b.profitcenterCe_key as ProfitCenter,
 CASE
 WHEN b.profitcenterCe_key = 51230 THEN "B2C"
 WHEN b.profitcenterCe_key = 51232 THEN "B2B"
-WHEN b.profitcenterCe_key is null THEN "Nieprzypisane"
+ELSE "Nieprzypisane"
 
 END as B2B_B2C,
 a.orderType_key as POType,
