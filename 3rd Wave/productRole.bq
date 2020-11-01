@@ -1,0 +1,60 @@
+CREATE OR REPLACE TABLE `ceeregion-prod.PriceFile.Product_Roles_PL` as 
+SELECT 
+a.productNo_key, 
+a.Product_ID,
+b.dateValidFrom_key,
+b.dateValidTo_key, 
+b.productRole_key,
+a.Nazwa, 
+a.Brand, 
+a.EAN, 
+a.nameManufacturer, 
+a.purGrp, 
+a.MATKL, 
+a.VkPL_brutto, 
+a.VkPL_netto, 
+a.Zakup_PLN_netto, 
+a.Ilosc, 
+a.purOrderQtyRoundingValue, 
+a.statusArticleSite, 
+a.statusCrossSite, 
+a.statusCrossDistrChain, 
+a.statusDistriChainSpecific, 
+a.MTPOS_PL_5810,
+
+
+
+FROM `ceeregion-prod.PriceFile.PriceFile_PL` as a 
+LEFT JOIN `conrad-cbdp-prod-core.de_conrad_dwh1000_dwh_HistProductRole.HistProductRole` as b  on a.productNo_key = b.productNo_key
+WHERE b.dateValidTo_key  = 29991231;
+
+-----------------
+CREATE OR REPLACE TABLE `ceeregion-prod.PriceFile.Product_Roles_PL` as 
+SELECT 
+a.Product_ID, 
+a.dateValidFrom_key, 
+a.dateValidTo_key, 
+a.productRole_key,
+b.productRoleDescEng,
+a.Nazwa, 
+a.Brand, 
+a.EAN, 
+a.nameManufacturer, 
+a.purGrp, 
+a.MATKL, 
+a.VkPL_brutto, 
+a.VkPL_netto, 
+a.Zakup_PLN_netto, 
+a.Ilosc, 
+a.purOrderQtyRoundingValue, 
+a.statusArticleSite, 
+a.statusCrossSite, 
+a.statusCrossDistrChain, 
+a.statusDistriChainSpecific, 
+a.MTPOS_PL_5810
+
+ FROM `ceeregion-prod.PriceFile.Product_Roles_PL` as a
+ LEFT JOIN `conrad-cbdp-prod-core.de_conrad_dwh1000_dwh_DimProductRole.DimProductRole` as b on a.productRole_key = b.productRole_key 
+
+ 
+
