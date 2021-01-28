@@ -1,0 +1,17 @@
+CREATE OR REPLACE TABLE `ceeregion-prod.ContacPerson_CLCL_Milena.B2C_Customers_ContactPerson` as 
+SELECT DISTINCT
+a.CustomerNo,
+b.customerNo_key, 
+b.mobilePhoneNo,
+b.phoneNo,
+b.eMailAddress,
+b.lastName,
+b.firstName,
+b.dateLastBilling
+
+FROM `ceeregion-prod.ContacPerson_CLCL_Milena.B2C_Customers_Insertion` as a
+LEFT JOIN `conrad-cbdp-prod-core.de_conrad_dwh1000_dwh_DimContactPerson.DimContactPerson` as b on a.CustomerNo = b.customerNo 
+-- WHERE customerNo_key = "0781000061"
+-- WHERE  dateLastBilling > "2020-01-01"
+
+ORDER BY b.dateLastBilling  DESC
